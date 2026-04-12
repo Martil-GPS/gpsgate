@@ -126,7 +126,7 @@ a:hover { text-decoration: underline; }
 }
 
 .login-card .btn-primary:disabled {
-  background: #b0c4de;
+  background: #93b3d6;
   cursor: not-allowed;
 }
 

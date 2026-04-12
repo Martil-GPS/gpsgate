@@ -5,7 +5,7 @@
  * Përdor token Bearer për autorizim.
  */
 
-var API_BASE = (localStorage.getItem('gps_server') || 'https://gps.sts.al') + '/comGpsGate/api/v.1';
+var API_BASE = getApiBase();
 
 /**
  * Merr API_BASE dinamikisht nga localStorage
