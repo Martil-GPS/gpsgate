@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPS Tracking — Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAE1ej_NYB_gWjXvt03VXcv1GDnecSB3Ak"></script>
+</head>
+<body>
+
+  <!-- Spinner gjatë ngarkimit -->
+  <div id="spinner" class="spinner-overlay hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="dashboard">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <img src="../assets/images/logo.png" alt="Logo" class="logo">
+        <h1>GPS Tracking</h1>
+      </div>
+
+      <div class="header-stats">
+        <span>Totali: <strong id="statTotal">0</strong></span>
+        <span class="stat-online">Online: <strong id="statOnline">0</strong></span>
+        <span class="stat-offline">Offline: <strong id="statOffline">0</strong></span>
+      </div>
+
+      <div>
+        <span id="headerUsername" style="margin-right:12px;font-size:13px;color:#ccc;"></span>
+        <button id="logoutBtn" class="btn-logout">Dil</button>
+      </div>
+    </header>
+
+    <!-- Përmbajtja kryesore -->
+    <div class="content">
+
+      <!-- Sidebar — Lista e mjeteve -->
+      <aside class="sidebar">
+        <div class="sidebar-header">Mjetet</div>
+        <div class="sidebar-search">
+          <input type="text" id="vehicleSearch" placeholder="Kërko mjet...">
+        </div>
+        <ul id="vehicleList" class="vehicle-list">
+          <!-- Renderohet nga dashboard.js -->
+        </ul>
+      </aside>
+
+      <!-- Harta -->
+      <div class="map-container">
+        <div id="map"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Skriptet -->
+  <script src="js/api.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/dashboard.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPS Tracking — Hyrje</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Spinner gjatë ngarkimit -->
+  <div id="spinner" class="spinner-overlay hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Login Forma -->
+  <div class="login-wrapper">
+    <div class="login-box">
+      <img src="../assets/images/logo.png" alt="GPS Tracking Logo" class="logo">
+      <h1>GPS Tracking</h1>
+
+      <form id="loginForm" autocomplete="on">
+        <div class="form-group">
+          <label for="username">Përdoruesi</label>
+          <input type="text" id="username" name="username" placeholder="Shkruani emrin e përdoruesit" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Fjalëkalimi</label>
+          <input type="password" id="password" name="password" placeholder="Shkruani fjalëkalimin" required>
+        </div>
+
+        <div class="form-group">
+          <label for="application">Aplikacioni (ID)</label>
+          <input type="text" id="application" name="application" placeholder="ID e aplikacionit (p.sh. 1)" required>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-primary">Hyr</button>
+
+        <div id="loginError" class="login-error"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Skriptet -->
+  <script src="js/api.js"></script>
+  <script src="js/login.js"></script>
+
+</body>
+</html>
