@@ -1,0 +1,157 @@
+$sc-dark-primary-text: white;
+$sc-light-primary-text: whitesmoke;
+
+
+$sc-primary: (
+  50: #e0eaf3,
+  100: #b3cae2,
+  200: #80a7cf,
+  300: #4d84bc,
+  400: #2669ad,
+  500: #20aa9e,
+  600: #004897,
+  700: #003f8d,
+  800: #003683,
+  900: #002672,
+  A100: #a1b7ff,
+  A200: #6e91ff,
+  A400: #3b6aff,
+  A700: #2157ff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #ffffff,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #ffffff,
+    A400 : #ffffff,
+    A700 : #ffffff,
+  )
+);
+
+$sc-accent: (
+  50: #f5e4e4,
+  100: #e6bcbc,
+  200: #d59090,
+  300: #c46363,
+  400: #b74141,
+  500: #20aa9e,
+  600: #a31c1c,
+  700: #991818,
+  800: #901313,
+  900: #7f0b0b,
+  A100: #ffb0b0,
+  A200: #ff7d7d,
+  A400: #ff4a4a,
+  A700: #ff3030,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$sc-warn: (
+  50: #f5e4e4,
+  100: #e6bcbc,
+  200: #d59090,
+  300: #c46363,
+  400: #b74141,
+  500: #913529,
+  600: #a31c1c,
+  700: #991818,
+  800: #901313,
+  900: #7f0b0b,
+  A100: #ffb0b0,
+  A200: #ff7d7d,
+  A400: #ff4a4a,
+  A700: #ff3030,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #ffffff,
+    500 : white,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+
+$sc_blue_button: #dee8f1;
+$sc_blue_button_text: #20558c;
+$sc_red_button: #c25c5f;
+$sc_login_background: #BCBCBC;
+
+
+@mixin content($width) {
+  width: $width;
+  margin: 0 auto;
+  padding: 6px;
+  &:before, &:after {
+    content: '';
+    display: table-row;
+  }
+}
+
+
+@mixin container() {
+  width: 100%;
+  height: 100%;
+  background: #f5f5f5;
+  &:before, &:after {
+    content: '';
+    display: table-row;
+  }
+}
+
+@mixin resize-mat-icon($size: 24px) {
+  font-size: $size;
+  width: $size !important;
+  height: $size !important;
+  //line-height: $size;
+}
+
+.center-form-960 {
+  margin: auto;
+  max-width: 960px;
+}
+
+.center-form-500 {
+  margin: auto;
+  max-width: 500px;
+}
+
+.center-form-600 {
+  margin: auto;
+  max-width: 600px;
+}
+
+.sc.container {
+  @include container()
+}
+
+

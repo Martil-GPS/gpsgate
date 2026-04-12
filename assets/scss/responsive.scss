@@ -1,0 +1,41 @@
+@media (max-width: 600px) {
+  //write scss for mobile phone responsiveness here
+}
+
+@media (max-width: 1100px) {
+  mat-form-field, ng-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1100px) {
+  .responsive-table {
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+    table-layout: auto;
+  }
+  .responsive-table th,
+  .responsive-table td {
+    white-space: normal;
+  }
+  .responsive-table {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 1700px) {
+  .responsive-table {
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+    table-layout: auto;
+  }
+  .responsive-table th,
+  .responsive-table td {
+    white-space: normal;
+  }
+  .responsive-table {
+    max-width: 100%;
+  }
+}
