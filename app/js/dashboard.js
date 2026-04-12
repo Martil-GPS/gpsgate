@@ -3,7 +3,7 @@
  *
  * - Kontrollon autentikimin
  * - Ngarkon listën e mjeteve
- * - Auto-refresh çdo 30 sekonda
+ * - Auto-refresh çdo 3 sekonda
  * - Renderon sidebar-in
  * - Handle klikimin e mjeteve
  */
@@ -12,7 +12,7 @@
 var vehicles = [];
 var vehiclesWithPositions = [];
 var refreshInterval = null;
-var REFRESH_MS = 30000; // 30 sekonda
+var REFRESH_MS = 3000; // 3 sekonda
 
 document.addEventListener('DOMContentLoaded', function () {
   // Kontrollo autentikimin
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Ngarko të dhënat
   loadDashboard(token, appId);
 
-  // Auto-refresh çdo 30 sekonda
+  // Auto-refresh çdo 3 sekonda
   refreshInterval = setInterval(function () {
     refreshPositions(token, appId);
   }, REFRESH_MS);
@@ -84,6 +84,9 @@ async function loadDashboard(token, appId) {
 
     // Përditëso statistikat në header
     updateStats(vehiclesWithPositions);
+
+    // Përditëso kohën e fundit
+    updateLastUpdateTime();
   } catch (err) {
     console.error('Gabim gjatë ngarkimit:', err);
   } finally {
@@ -102,6 +105,7 @@ async function refreshPositions(token, appId) {
     renderVehicleList(vehiclesWithPositions);
     updateAllMarkers(vehiclesWithPositions);
     updateStats(vehiclesWithPositions);
+    updateLastUpdateTime();
   } catch (err) {
     console.error('Gabim gjatë refresh:', err);
   }
@@ -222,6 +226,20 @@ function isVehicleOnline(vehicle) {
 }
 
 /* ---------- Helpers ---------- */
+
+/**
+ * Përditëso kohën e fundit të refresh-it në header
+ */
+function updateLastUpdateTime() {
+  var el = document.getElementById('lastUpdate');
+  if (el) {
+    var now = new Date();
+    var hours = String(now.getHours()).padStart(2, '0');
+    var minutes = String(now.getMinutes()).padStart(2, '0');
+    var seconds = String(now.getSeconds()).padStart(2, '0');
+    el.textContent = 'U përditësua: ' + hours + ':' + minutes + ':' + seconds;
+  }
+}
 
 function showSpinner() {
   var s = document.getElementById('spinner');

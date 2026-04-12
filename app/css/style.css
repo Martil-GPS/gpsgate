@@ -27,88 +27,170 @@ a:hover { text-decoration: underline; }
 
 /* ---------- Login Page ---------- */
 .login-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: #f5f5f5;
+  overflow: hidden;
 }
 
-.login-box {
-  background: #16213e;
-  padding: 40px 36px;
-  border-radius: 12px;
-  width: 380px;
-  max-width: 95%;
-  box-shadow: 0 8px 32px rgba(0,0,0,.45);
+.login-blue-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: #4A90E2;
+  z-index: 0;
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  padding: 40px 36px 32px;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 440px;
+  min-height: 50vh;
+  box-shadow: 0 -4px 24px rgba(0,0,0,.1);
   text-align: center;
 }
 
-.login-box .logo {
-  width: 120px;
-  margin-bottom: 18px;
+.login-logo {
+  font-size: 48px;
+  margin-bottom: 8px;
 }
 
-.login-box h1 {
-  font-size: 22px;
-  margin-bottom: 24px;
-  color: #e94560;
+.login-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 6px;
 }
 
-.form-group {
-  margin-bottom: 18px;
+.login-subtitle {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 28px;
+}
+
+.login-card .form-group {
+  margin-bottom: 16px;
   text-align: left;
 }
 
-.form-group label {
+.login-card .form-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   font-size: 13px;
-  color: #aaa;
+  color: #555;
+  font-weight: 500;
 }
 
-.form-group input,
-.form-group select {
+.login-card .form-group input {
   width: 100%;
-  padding: 10px 14px;
-  border: 1px solid #0f3460;
-  border-radius: 6px;
-  background: #1a1a2e;
-  color: #eee;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #f9f9f9;
+  color: #333;
   font-size: 14px;
   outline: none;
   transition: border-color .2s;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-  border-color: #e94560;
+.login-card .form-group input:focus {
+  border-color: #4A90E2;
+  background: #fff;
 }
 
-.btn-primary {
+.login-card .btn-primary {
   width: 100%;
-  padding: 12px;
+  padding: 13px;
   border: none;
-  border-radius: 6px;
-  background: #e94560;
+  border-radius: 10px;
+  background: #4A90E2;
   color: #fff;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: background .2s;
+  margin-top: 8px;
 }
 
-.btn-primary:hover {
-  background: #c73650;
+.login-card .btn-primary:hover {
+  background: #357ABD;
 }
 
-.btn-primary:disabled {
-  background: #555;
+.login-card .btn-primary:disabled {
+  background: #b0c4de;
   cursor: not-allowed;
 }
 
+.btn-secondary {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: transparent;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .2s;
+  margin-top: 8px;
+}
+
+.btn-secondary:hover {
+  background: #f0f0f0;
+}
+
+.app-list-label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.app-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.app-item {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background: #f9f9f9;
+  color: #333;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+
+.app-item:hover {
+  background: #eef4fc;
+  border-color: #4A90E2;
+}
+
+.app-item.active {
+  background: #4A90E2;
+  color: #fff;
+  border-color: #4A90E2;
+}
+
 .login-error {
-  color: #e94560;
+  color: #e74c3c;
   font-size: 13px;
   margin-top: 12px;
   min-height: 20px;
@@ -173,6 +255,18 @@ a:hover { text-decoration: underline; }
 .btn-logout:hover {
   background: #e94560;
   color: #fff;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.last-update {
+  font-size: 12px;
+  color: #8ab4f8;
+  white-space: nowrap;
 }
 
 /* -- Content area (sidebar + map) -- */

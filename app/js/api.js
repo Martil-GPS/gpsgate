@@ -5,7 +5,15 @@
  * Përdor token Bearer për autorizim.
  */
 
-const API_BASE = 'https://gps.sts.al/comGpsGate/api/v.1';
+var API_BASE = (localStorage.getItem('gps_server') || 'https://gps.sts.al') + '/comGpsGate/api/v.1';
+
+/**
+ * Merr API_BASE dinamikisht nga localStorage
+ * @returns {string}
+ */
+function getApiBase() {
+  return (localStorage.getItem('gps_server') || 'https://gps.sts.al') + '/comGpsGate/api/v.1';
+}
 
 /* ---------- Helpers ---------- */
 
@@ -58,7 +66,7 @@ async function handleResponse(response) {
  * @returns {Promise<{token: string, applicationId: number}>}
  */
 async function login(username, password, application) {
-  const url = API_BASE + '/applications/' + encodeURIComponent(application) + '/tokens';
+  const url = getApiBase() + '/applications/' + encodeURIComponent(application) + '/tokens';
 
   const response = await fetch(url, {
     method: 'POST',
@@ -95,7 +103,7 @@ async function login(username, password, application) {
  * @returns {Promise<Array>}
  */
 async function getApplications(username, password) {
-  const url = API_BASE + '/applications';
+  const url = getApiBase() + '/applications';
 
   const response = await fetch(url, {
     method: 'GET',
@@ -120,7 +128,7 @@ async function getApplications(username, password) {
  * @returns {Promise<Array>}
  */
 async function getVehicles(token, appId) {
-  const url = API_BASE + '/applications/' + appId + '/users';
+  const url = getApiBase() + '/applications/' + appId + '/users';
 
   const response = await fetch(url, {
     method: 'GET',
@@ -139,7 +147,7 @@ async function getVehicles(token, appId) {
  * @returns {Promise<{latitude: number, longitude: number, speed: number, time: string}>}
  */
 async function getVehiclePosition(token, appId, userId) {
-  const url = API_BASE + '/applications/' + appId + '/users/' + userId + '/position';
+  const url = getApiBase() + '/applications/' + appId + '/users/' + userId + '/position';
 
   try {
     const response = await fetch(url, {
