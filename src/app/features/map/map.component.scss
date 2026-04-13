@@ -1,0 +1,260 @@
+.map-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+// Sidebar
+.sidebar {
+  width: 320px;
+  min-width: 320px;
+  background: #16213e;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: margin-left 0.3s ease;
+
+  &.closed {
+    margin-left: -320px;
+  }
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1a3a5c;
+
+  h2 {
+    color: #e0e0e0;
+    font-size: 16px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .btn-toggle {
+    background: none;
+    border: none;
+    color: #8a8a9a;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+
+    &:hover {
+      color: #e0e0e0;
+    }
+  }
+}
+
+.sidebar-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid #1a3a5c;
+
+  input {
+    width: 100%;
+    background: #0f3460;
+    border: 1px solid #1a4a7a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #e0e0e0;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: #6a6a7a;
+    }
+
+    &:focus {
+      border-color: #4a9eff;
+    }
+  }
+}
+
+.vehicle-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #16213e;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #1a4a7a;
+    border-radius: 2px;
+  }
+}
+
+.vehicle-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(15, 52, 96, 0.5);
+  }
+}
+
+.vehicle-status {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.vehicle-info {
+  flex: 1;
+  min-width: 0;
+
+  .vehicle-name {
+    color: #e0e0e0;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vehicle-desc {
+    color: #6a7a8a;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vehicle-speed {
+    color: #8a9aaa;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+}
+
+.loading-indicator,
+.no-vehicles {
+  color: #6a7a8a;
+  text-align: center;
+  padding: 24px 16px;
+  font-size: 13px;
+}
+
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #1a3a5c;
+
+  .btn-logout {
+    width: 100%;
+    background: transparent;
+    color: #8a8a9a;
+    border: 1px solid #2a2a4a;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      color: #ff6b6b;
+      border-color: #ff6b6b;
+    }
+  }
+}
+
+// Open sidebar button
+.btn-open-sidebar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 1001;
+  background: #16213e;
+  color: #e0e0e0;
+  border: 1px solid #1a4a7a;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    background: #1a5090;
+  }
+}
+
+// Map
+.map {
+  flex: 1;
+  height: 100%;
+}
+
+// Vehicle marker styles (global via ::ng-deep)
+:host ::ng-deep {
+  .vehicle-marker {
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .marker-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+  }
+
+  .marker-arrow {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid rgba(255, 255, 255, 0.9);
+    position: absolute;
+    top: 2px;
+  }
+
+  .marker-pulse {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid;
+    opacity: 0;
+    animation: pulse 2s ease-out infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  .vehicle-popup {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+
+    strong {
+      font-size: 14px;
+    }
+  }
+}
