@@ -101,6 +101,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filterVehicles();
   }
 
+  onViewChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.selectView(value ? +value : null);
+  }
+
   private startAutoUpdate(): void {
     this.updateSub = interval(3000).pipe(
       switchMap(() => this.apiService.getUpdates().pipe(

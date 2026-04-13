@@ -17,7 +17,7 @@
 
     @if (views.length > 0) {
       <div class="sidebar-views">
-        <select (change)="selectView($event.target && ($any($event.target)).value ? +($any($event.target)).value : null)">
+        <select (change)="onViewChange($event)">
           <option [value]="''">Të gjitha pamjet</option>
           @for (view of views; track view.id) {
             <option [value]="view.id">{{ view.name }}</option>
