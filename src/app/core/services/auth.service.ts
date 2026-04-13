@@ -27,11 +27,14 @@ export class AuthService {
       }
     };
 
-    return this.http.post<LoginResponse>(
+    return this.http.post(
       `${environment.apiUrl}/rpc/Directory/v.1?_METHOD=Login`,
-      body
+      body,
+      { responseType: 'text' }
     ).pipe(
-      map(response => {
+      map(text => {
+        const cleaned = text.replace(/new Date\((-?\d+)\)/g, '"$1"');
+        const response: LoginResponse = JSON.parse(cleaned);
         this.session = response.result.result.Session;
         return this.session;
       })

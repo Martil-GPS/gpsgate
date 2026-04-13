@@ -32,12 +32,16 @@ export class GpsGateApiService {
       method: 'GetViews',
       params: { AppId: appId }
     };
-    return this.http.post<GetViewsResponse>(
+    return this.http.post(
       `${environment.apiUrl}/rpc/View/v.1?_METHOD=GetViews`,
       body,
-      { headers: this.getRpcHeaders('GetViews') }
+      { headers: this.getRpcHeaders('GetViews'), responseType: 'text' }
     ).pipe(
-      map(response => response.result.views)
+      map(text => {
+        const cleaned = text.replace(/new Date\((-?\d+)\)/g, '"$1"');
+        const response: GetViewsResponse = JSON.parse(cleaned);
+        return response.result.views;
+      })
     );
   }
 
