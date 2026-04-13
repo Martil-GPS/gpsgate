@@ -9,6 +9,7 @@ import * as L from 'leaflet';
 import { AuthService } from '../../core/services/auth.service';
 import { GpsGateApiService } from '../../core/services/gpsgate-api.service';
 import { VehicleUser } from '../../core/models/user.model';
+import { GpsGateView } from '../../core/models/session.model';
 
 @Component({
   selector: 'app-map',
@@ -24,6 +25,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   vehicles: VehicleUser[] = [];
   filteredVehicles: VehicleUser[] = [];
+  views: GpsGateView[] = [];
+  selectedViewId: number | null = null;
   searchTerm = '';
   sidebarOpen = true;
   appName = '';
@@ -84,6 +87,23 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loading = false;
       }
     });
+
+    this.apiService.getViews().subscribe({
+      next: (views) => {
+        this.views = views;
+      },
+      error: () => {}
+    });
+  }
+
+  selectView(viewId: number | null): void {
+    this.selectedViewId = viewId;
+    this.filterVehicles();
+  }
+
+  onViewChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.selectView(value ? +value : null);
   }
 
   private startAutoUpdate(): void {
