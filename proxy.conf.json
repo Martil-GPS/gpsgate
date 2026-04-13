@@ -1,0 +1,7 @@
+{
+  "/comGpsGate": {
+    "target": "https://gps.sts.al",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
