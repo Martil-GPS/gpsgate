@@ -1,14 +1,14 @@
-﻿import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, from } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 import { VehicleUser } from '../models/user.model';
+import { GpsGateView, GetViewsResponse } from '../models/session.model';
 
-const VIEW_ID = 43;
-const CHUNK_SIZE = 1000;
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class GpsGateApiService {
 
   constructor(
@@ -16,53 +16,64 @@ export class GpsGateApiService {
     private authService: AuthService
   ) {}
 
-  getUsers(): Observable<VehicleUser[]> {
-    return from(this.fetchAllUsersChunked());
+  private getRpcHeaders(method: string): HttpHeaders {
+    return new HttpHeaders({
+      'Content-Type': 'application/json; charset=UTF-8',
+      'x-json-rpc': method,
+      'x-requested-with': 'XMLHttpRequest',
+      'x-csrf-token': this.authService.getCsrfToken()
+    });
   }
 
-  getUpdates(): Observable<VehicleUser[]> {
-    return from(this.fetchAllUsersChunked());
-  }
-
-  private async fetchAllUsersChunked(): Promise<VehicleUser[]> {
+  getViews(): Observable<GpsGateView[]> {
     const appId = this.authService.getSelectedAppId();
-    const csrf = this.authService.getCsrfToken();
-    let allUsers: VehicleUser[] = [];
-    let iIndex = 0;
-    let completed = false;
+    const body = {
+      id: 1,
+      method: 'GetViews',
+      params: { AppId: appId }
+    };
+    return this.http.post<GetViewsResponse>(
+      `${environment.apiUrl}/rpc/View/v.1?_METHOD=GetViews`,
+      body,
+      { headers: this.getRpcHeaders('GetViews') }
+    ).pipe(
+      map(response => response.result.views)
+    );
+  }
 
-    while (!completed) {
-      const resp = await fetch(
-        `${environment.apiUrl}/rpc/Directory/v.1?_METHOD=GetLatestUserDataByViewChunked`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'x-json-rpc': 'GetLatestUserDataByViewChunked',
-            'x-requested-with': 'XMLHttpRequest',
-            'x-csrf-token': csrf
-          },
-          body: JSON.stringify({
-            id: 1,
-            method: 'GetLatestUserDataByViewChunked',
-            params: { iViewID: VIEW_ID, iIndex: iIndex, iCount: CHUNK_SIZE, appId: appId }
-          })
-        }
-      );
+  getUsers(): Observable<VehicleUser[]> {
+    const appId = this.authService.getSelectedAppId();
+    return this.http.get<VehicleUser[]>(
+      `${environment.apiUrl}/api/v.1/applications/${appId}/users`,
+      { headers: this.getRpcHeaders('getusers') }
+    );
+  }
 
-      const text = await resp.text();
-      const clean = text.replace(/new Date\((-?\d+)\)/g, '"$1"');
-      const j = JSON.parse(clean);
-      const result = j.result?.result;
+  getUpdates(): Observable<any> {
+    const appId = this.authService.getSelectedAppId();
+    const body = {
+      method: 'getupdates',
+      appId: appId,
+      params: {}
+    };
+    return this.http.post<any>(
+      `${environment.apiUrl}/MobileAPI.ashx`,
+      body,
+      { headers: this.getRpcHeaders('getupdates') }
+    );
+  }
 
-      if (!result) break;
-      if (result.users?.length) allUsers = allUsers.concat(result.users);
-      completed = result.completed;
-      iIndex += CHUNK_SIZE;
-      if (iIndex > 100000) break;
-    }
-
-    return allUsers.filter(u => u.username !== 'admin');
+  getMobileUsers(): Observable<any> {
+    const appId = this.authService.getSelectedAppId();
+    const body = {
+      method: 'getusers',
+      appId: appId,
+      params: {}
+    };
+    return this.http.post<any>(
+      `${environment.apiUrl}/MobileAPI.ashx`,
+      body,
+      { headers: this.getRpcHeaders('getusers') }
+    );
   }
 }

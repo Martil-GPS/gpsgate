@@ -29,3 +29,22 @@ export interface LoginResponse {
     };
   };
 }
+
+export interface GpsGateView {
+  id: number;
+  name: string;
+  description: string;
+  statusFilter: string;
+  matchAllTags: boolean;
+  tagIDs: number[];
+}
+
+export interface GetViewsResponse {
+  id: number;
+  result: {
+    views: GpsGateView[];
+    __type: string;
+    queryTimeStamp: string;
+    __result: string;
+  };
+}
