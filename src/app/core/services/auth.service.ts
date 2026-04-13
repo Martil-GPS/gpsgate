@@ -80,8 +80,14 @@ export class AuthService {
 
   getAuthHeaders(): HttpHeaders {
     return new HttpHeaders({
-      'Authorization': this.getHash(),
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json; charset=UTF-8',
+      'x-json-rpc': 'request',
+      'x-requested-with': 'XMLHttpRequest',
+      'x-csrf-token': this.session?.CsrfToken || ''
     });
+  }
+
+  getCsrfToken(): string {
+    return this.session?.CsrfToken || '';
   }
 }

@@ -17,6 +17,7 @@ export interface Session {
   UserName: string;
   UserDisplayName: string;
   Hash: string;
+  CsrfToken: string;
   Applications: Record<string, GpsGateApplication>;
 }
 
@@ -26,5 +27,24 @@ export interface LoginResponse {
     result: {
       Session: Session;
     };
+  };
+}
+
+export interface GpsGateView {
+  id: number;
+  name: string;
+  description: string;
+  statusFilter: string;
+  matchAllTags: boolean;
+  tagIDs: number[];
+}
+
+export interface GetViewsResponse {
+  id: number;
+  result: {
+    views: GpsGateView[];
+    __type: string;
+    queryTimeStamp: string;
+    __result: string;
   };
 }
