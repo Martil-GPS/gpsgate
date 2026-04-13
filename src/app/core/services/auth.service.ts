@@ -27,14 +27,11 @@ export class AuthService {
       }
     };
 
-    return this.http.post(
+    return this.http.post<LoginResponse>(
       `${environment.apiUrl}/rpc/Directory/v.1?_METHOD=Login`,
-      body,
-      { responseType: 'text' }
+      body
     ).pipe(
-      map(text => {
-        const cleaned = text.replace(/new Date\((-?\d+)\)/g, '"$1"');
-        const response: LoginResponse = JSON.parse(cleaned);
+      map(response => {
         this.session = response.result.result.Session;
         return this.session;
       })
@@ -83,14 +80,8 @@ export class AuthService {
 
   getAuthHeaders(): HttpHeaders {
     return new HttpHeaders({
-      'Content-Type': 'application/json; charset=UTF-8',
-      'x-json-rpc': 'request',
-      'x-requested-with': 'XMLHttpRequest',
-      'x-csrf-token': this.session?.CsrfToken || ''
+      'Authorization': this.getHash(),
+      'Content-Type': 'application/json'
     });
-  }
-
-  getCsrfToken(): string {
-    return this.session?.CsrfToken || '';
   }
 }
