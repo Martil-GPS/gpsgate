@@ -1,9 +1,36 @@
-<div class="map-container">
+﻿<div class="map-container">
   <!-- Sidebar -->
   <div class="sidebar" [class.closed]="!sidebarOpen">
     <div class="sidebar-header">
-      <h2>{{ appName }}</h2>
+      <div class="app-switcher" (click)="toggleAppDropdown()">
+        <span class="app-name">{{ appName }}</span>
+        <span class="app-arrow" [class.open]="appDropdownOpen">▼</span>
+      </div>
       <button class="btn-toggle" (click)="toggleSidebar()">✕</button>
+
+      @if (appDropdownOpen) {
+        <div class="app-dropdown">
+          <input
+            class="app-search"
+            type="text"
+            placeholder="Filter applications..."
+            [(ngModel)]="appSearchText"
+            (input)="filterApps()"
+            autofocus
+          />
+          <div class="app-dropdown-list">
+            @for (app of filteredApps; track app.id) {
+              <div
+                class="app-dropdown-item"
+                [class.active]="app.id === selectedAppId"
+                (click)="switchApp(app)"
+              >
+                {{ app.name }}
+              </div>
+            }
+          </div>
+        </div>
+      }
     </div>
 
     <div class="sidebar-search">
@@ -43,11 +70,9 @@
     </div>
   </div>
 
-  <!-- Toggle button when sidebar is closed -->
   @if (!sidebarOpen) {
     <button class="btn-open-sidebar" (click)="toggleSidebar()">☰</button>
   }
 
-  <!-- Map -->
   <div id="map" class="map"></div>
 </div>

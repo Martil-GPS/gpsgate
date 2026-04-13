@@ -1,33 +1,37 @@
-export interface TrackPosition {
-  latitude: number;
-  longitude: number;
-  altitude: number;
+﻿export interface TrackPosition {
+  lat: number;
+  lng: number;
+  alt: number;
 }
 
 export interface TrackVelocity {
-  groundSpeed: number;
+  speed: number;
   heading: number;
 }
 
 export interface TrackPoint {
-  position: TrackPosition;
-  velocity: TrackVelocity;
+  pos: TrackPosition;
+  vel: TrackVelocity;
   utc: string;
   valid: boolean;
 }
 
 export interface DeviceInfo {
+  id: number;
   imei: string;
   protocolID: string;
+  name: string;
 }
 
 export interface VehicleUser {
   id: number;
   username: string;
   name: string;
+  surname: string | null;
   description: string;
   trackPoint: TrackPoint | null;
   calculatedSpeed: number;
   deviceActivity: string;
   devices: DeviceInfo[];
+  originalApplicationID?: number;
 }

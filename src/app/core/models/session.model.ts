@@ -1,4 +1,4 @@
-export interface GpsGateApplication {
+﻿export interface GpsGateApplication {
   id: number;
   name: string;
   description: string;
@@ -17,6 +17,7 @@ export interface Session {
   UserName: string;
   UserDisplayName: string;
   Hash: string;
+  CsrfToken: string;
   Applications: Record<string, GpsGateApplication>;
 }
 

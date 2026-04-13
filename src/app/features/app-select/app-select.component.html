@@ -1,25 +1,48 @@
-<div class="app-select-container">
+﻿<div class="app-select-container">
   <div class="app-select-card">
     <div class="header">
       <div class="logo-icon">📡</div>
-      <h1>Zgjidhni Aplikacionin</h1>
+      <h1>Choose application</h1>
       <p>Mirësevini, {{ userName }}</p>
     </div>
 
-    <div class="app-list">
-      @for (app of applications; track app.id) {
-        <div class="app-card" (click)="selectApp(app)">
-          <div class="app-icon">🚕</div>
-          <div class="app-info">
-            <h3>{{ app.name }}</h3>
-            @if (app.description) {
-              <p>{{ app.description }}</p>
+    <div class="dropdown-wrapper">
+      <div class="dropdown-selected" (click)="toggleDropdown()">
+        <span>{{ selectedApp ? selectedApp.name : 'Zgjidhni...' }}</span>
+        <span class="arrow" [class.open]="isOpen">▲</span>
+      </div>
+
+      @if (isOpen) {
+        <div class="dropdown-list">
+          <input
+            class="search-input"
+            type="text"
+            placeholder="Kërko..."
+            [(ngModel)]="searchText"
+            (input)="filterApps()"
+            autofocus
+          />
+          <div class="dropdown-options">
+            @for (app of filteredApps; track app.id) {
+              <div
+                class="dropdown-option"
+                [class.selected]="selectedApp?.id === app.id"
+                (click)="selectApp(app)"
+              >
+                {{ app.name }}
+              </div>
+            }
+            @if (filteredApps.length === 0) {
+              <div class="no-results">Nuk u gjet asgjë</div>
             }
           </div>
-          <div class="app-arrow">→</div>
         </div>
       }
     </div>
+
+    <button class="btn-confirm" (click)="confirm()" [disabled]="!selectedApp">
+      Hyr →
+    </button>
 
     <button class="btn-logout" (click)="logout()">Dil</button>
   </div>
