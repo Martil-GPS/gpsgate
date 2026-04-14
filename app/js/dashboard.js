@@ -11,6 +11,8 @@ let refreshInterval = null;
 let appId, hash, appName;
 
 const REFRESH_INTERVAL_MS = 3000;
+const MAX_ADDRESS_LENGTH  = 40;
+const MIN_DETAIL_ZOOM     = 14;
 
 // ===== Init =====
 document.addEventListener('DOMContentLoaded', function () {
@@ -216,7 +218,7 @@ function renderVehicleList(list) {
     queueGeocode(latlng.lat, latlng.lng, function (addr) {
       const el = container.querySelector('.vehicle-addr[data-vid="' + v.id + '"]');
       if (el) {
-        const shortAddr = addr.length > 40 ? addr.substring(0, 37) + '…' : addr;
+        const shortAddr = addr.length > MAX_ADDRESS_LENGTH ? addr.substring(0, MAX_ADDRESS_LENGTH - 3) + '…' : addr;
         el.textContent = shortAddr;
       }
     });
@@ -341,7 +343,7 @@ function showVehicleDetail(id) {
 
   // Pan map to vehicle
   if (latlng) {
-    map.setView([latlng.lat, latlng.lng], Math.max(map.getZoom(), 14), { animate: true });
+    map.setView([latlng.lat, latlng.lng], Math.max(map.getZoom(), MIN_DETAIL_ZOOM), { animate: true });
   }
 
   // Async geocode address
@@ -373,7 +375,6 @@ function handleLogout() {
   localStorage.removeItem('gps_appId');
   localStorage.removeItem('gps_appName');
   localStorage.removeItem('gps_username');
-  localStorage.removeItem('gps_password');
   localStorage.removeItem('gps_session');
   localStorage.removeItem('gps_csrf');
   window.location.href = 'index.html';

@@ -53,9 +53,8 @@ document.addEventListener('DOMContentLoaded', function () {
         throw new Error('No applications found for this account.');
       }
 
-      // Store credentials for potential re-login
+      // Store non-sensitive session data only (no plaintext password)
       localStorage.setItem('gps_username', username);
-      localStorage.setItem('gps_password', password);
       localStorage.setItem('gps_session', JSON.stringify(session));
 
       if (apps.length === 1) {

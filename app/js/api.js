@@ -7,6 +7,11 @@ const SITE_ADMIN_BO_TYPE = 'GpsGate.SiteAdminApplication.SiteAdminApplication';
 
 /**
  * Clean GpsGate JSON responses that contain `new Date(...)` literals.
+ * GpsGate server sometimes embeds JavaScript Date constructors in JSON responses
+ * (e.g., `"time": new Date(-62135596800000)`). This regex replaces them with
+ * the raw numeric timestamp string so the result is valid JSON.
+ * Limitation: only handles single numeric arguments; multiple-arg Date constructors
+ * are not expected in GpsGate responses.
  */
 function cleanResponse(text) {
   return text.replace(/new Date\((-?\d+)\)/g, '"$1"');
@@ -202,16 +207,13 @@ function getLatLng(vehicle) {
 
 /**
  * Get vehicle speed in km/h.
+ * GpsGate REST API returns groundSpeed in m/s; multiply by 3.6 to get km/h.
  */
 function getSpeedKmh(vehicle) {
   const tp = vehicle.trackPoint;
   if (!tp) return 0;
-  // groundSpeed is in m/s from REST API, convert to km/h
-  // Or it may already be km/h - try both
-  const raw = tp.velocity?.groundSpeed ?? tp.vel?.speed ?? 0;
-  // If raw > 200, likely m/s (impossible km/h for land vehicle), convert
-  // GpsGate REST API returns m/s
-  return Math.round(raw * 3.6);
+  const speedMs = tp.velocity?.groundSpeed ?? tp.vel?.speed ?? 0;
+  return Math.round(speedMs * 3.6);
 }
 
 /**
@@ -294,9 +296,10 @@ async function reverseGeocode(lat, lng) {
   return fallback;
 }
 
-// Throttled geocode queue
+// Throttled geocode queue — respects Nominatim's 1 req/sec rate limit
 const geocodeQueue = [];
 let geocodeRunning = false;
+const GEOCODE_DELAY_MS = 1100;
 
 function queueGeocode(lat, lng, callback) {
   const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
@@ -311,5 +314,5 @@ async function processGeocodeQueue() {
   const { lat, lng, callback } = geocodeQueue.shift();
   const result = await reverseGeocode(lat, lng);
   callback(result);
-  setTimeout(processGeocodeQueue, 1100); // respect Nominatim rate limit
+  setTimeout(processGeocodeQueue, GEOCODE_DELAY_MS); // respect Nominatim rate limit
 }
