@@ -28,7 +28,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   views: GpsGateView[] = [];
   selectedViewId: number = 0;
   searchTerm = '';
-  sidebarOpen = false;
+  sidebarOpen = true;
   appName = '';
   appDropdownOpen = false;
   appFilterTerm = '';
