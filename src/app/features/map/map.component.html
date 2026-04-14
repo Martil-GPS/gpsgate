@@ -77,8 +77,13 @@
     </div>
   </div>
 
+  <!-- Open Sidebar Button (shown when sidebar is closed) -->
+  @if (!sidebarOpen) {
+    <button class="btn-open-sidebar" (click)="toggleSidebar()">&#9776;</button>
+  }
+
   <!-- Left Floating Buttons -->
-  <div class="left-buttons">
+  <div class="left-buttons" [class.sidebar-closed]="!sidebarOpen">
     <button class="left-btn" (click)="toggleVehiclePanel()" title="Vehicles">&#9776;</button>
     <button class="left-btn" title="Reports">&#128196;</button>
     <button class="left-btn" title="Alerts">&#9888;</button>
