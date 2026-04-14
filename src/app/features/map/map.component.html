@@ -1,4 +1,4 @@
-<div class="map-container">
+<div class="map-container" [class.sidebar-collapsed]="!sidebarOpen">
 
   <!-- Sidebar -->
   <div class="sidebar" [class.closed]="!sidebarOpen">
@@ -76,6 +76,11 @@
       <button class="btn-logout-icon" (click)="logout()" title="Logout">&#x23FB; Logout</button>
     </div>
   </div>
+
+  <!-- Open sidebar button when closed -->
+  @if (!sidebarOpen) {
+    <button class="btn-open-sidebar" (click)="toggleSidebar()">&#9776;</button>
+  }
 
   <!-- Left Floating Buttons -->
   <div class="left-buttons">
