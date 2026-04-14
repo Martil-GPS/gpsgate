@@ -266,3 +266,147 @@
     strong { font-size: 14px; }
   }
 }
+
+
+
+
+.vehicle-marker {
+  overflow: visible !important;
+}
+
+.marker-label {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000000;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 9999 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-name-btn {
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin: 0;
+  user-select: none;
+  &:hover { opacity: 0.8; }
+}
+
+.app-dropdown {
+  background: #1e2a3a;
+  border: 1px solid #2d3d4f;
+  border-radius: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+  z-index: 1000;
+
+  .app-filter-input {
+    width: 100%;
+    padding: 8px;
+    background: #16202d;
+    border: none;
+    border-bottom: 1px solid #2d3d4f;
+    color: white;
+    box-sizing: border-box;
+    &:focus { outline: none; }
+  }
+
+  .app-dropdown-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    color: #cdd6e0;
+    font-size: 0.9rem;
+    &:hover { background: #2d3d4f; }
+    &.active { color: #4fc3f7; font-weight: bold; }
+  }
+}
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .map-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    min-width: unset;
+    height: 100vh;
+    z-index: 2000;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+
+    &.closed {
+      margin-left: 0;
+      transform: translateX(-100%);
+    }
+  }
+
+  .map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .btn-open-sidebar {
+    top: 12px;
+    left: 12px;
+    padding: 12px 16px;
+    font-size: 20px;
+    z-index: 1500;
+  }
+
+  .vehicle-item {
+    padding: 14px 16px;
+  }
+
+  .vehicle-info {
+    .vehicle-name { font-size: 15px; }
+    .vehicle-speed { font-size: 13px; }
+  }
+
+  .sidebar-header {
+    padding: 20px 16px;
+    h2 { font-size: 1.2rem; }
+  }
+
+  .app-dropdown {
+    max-height: 50vh;
+  }
+
+  .sidebar-footer {
+    padding: 16px;
+    .btn-logout {
+      padding: 14px;
+      font-size: 15px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .vehicle-info {
+    .vehicle-name { font-size: 14px; }
+    .vehicle-desc { font-size: 12px; }
+    .vehicle-speed { font-size: 12px; }
+  }
+}

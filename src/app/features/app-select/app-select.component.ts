@@ -32,6 +32,9 @@ export class AppSelectComponent implements OnInit {
     if (this.applications.length === 0) {
       this.router.navigate(['/login']);
     }
+    if (this.applications.length > 0) {
+      this.selectedApp = this.applications[0];
+    }
   }
 
   toggleDropdown(): void {
@@ -54,10 +57,15 @@ export class AppSelectComponent implements OnInit {
   }
 
   confirm(): void {
-    if (this.selectedApp) {
-      this.authService.selectApplication(this.selectedApp.id);
-      this.router.navigate(['/map']);
-    }
+    if (!this.selectedApp) return;
+    this.authService.loginToApp(this.selectedApp.id).subscribe({
+      next: () => {
+        this.router.navigate(['/map']);
+      },
+      error: () => {
+        console.error('LoginToApp dështoi');
+      }
+    });
   }
 
   logout(): void {
@@ -65,3 +73,4 @@ export class AppSelectComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 }
+

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -27,57 +27,68 @@ export class GpsGateApiService {
 
   getViews(): Observable<GpsGateView[]> {
     const appId = this.authService.getSelectedAppId();
-    const body = {
-      id: 1,
-      method: 'GetViews',
-      params: { AppId: appId }
-    };
-    return this.http.post(
-      `${environment.apiUrl}/rpc/View/v.1?_METHOD=GetViews`,
-      body,
-      { headers: this.getRpcHeaders('GetViews'), responseType: 'text' }
+    const url = environment.apiUrl + '/rpc/View/v.1?_METHOD=GetViews';
+    const body = { id: 1, method: 'GetViews', params: { AppId: appId } };
+    return this.http.post(url, body,
+      { headers: this.getRpcHeaders('GetViews'), responseType: 'text' as 'json' }
     ).pipe(
-      map(text => {
-        const cleaned = text.replace(/new Date\((-?\d+)\)/g, '"$1"');
+      map((text: any) => {
+        const cleaned = text.replace(/new Date\((-?\d+)\)/g, "$1");
         const response: GetViewsResponse = JSON.parse(cleaned);
         return response.result.views;
       })
     );
   }
 
-  getUsers(): Observable<VehicleUser[]> {
+  private fetchChunk(viewId: number, index: number, count: number): Observable<any> {
     const appId = this.authService.getSelectedAppId();
-    return this.http.get<VehicleUser[]>(
-      `${environment.apiUrl}/api/v.1/applications/${appId}/users`,
-      { headers: this.getRpcHeaders('getusers') }
+    const url = environment.apiUrl + '/rpc/Directory/v.1?_METHOD=GetLatestUserDataByViewChunked';
+    const body = {
+      id: 1,
+      method: 'GetLatestUserDataByViewChunked',
+      params: { iViewID: viewId, iIndex: index, iCount: count, appId: appId }
+    };
+    return this.http.post(url, body,
+      { headers: this.getRpcHeaders('GetLatestUserDataByViewChunked'), responseType: 'text' as 'json' }
+    ).pipe(
+      map((text: any) => {
+        const cleaned = text.replace(/new Date\((-?\d+)\)/g, "$1");
+        return JSON.parse(cleaned);
+      })
     );
   }
 
-  getUpdates(): Observable<any> {
-    const appId = this.authService.getSelectedAppId();
-    const body = {
-      method: 'getupdates',
-      appId: appId,
-      params: {}
-    };
-    return this.http.post<any>(
-      `${environment.apiUrl}/MobileAPI.ashx`,
-      body,
-      { headers: this.getRpcHeaders('getupdates') }
-    );
+  getUsers(viewId: number = 18): Observable<VehicleUser[]> {
+    const chunkSize = 50;
+    let allUsers: VehicleUser[] = [];
+    let index = 0;
+    return new Observable<VehicleUser[]>(observer => {
+      const fetchNext = () => {
+        this.fetchChunk(viewId, index, chunkSize).subscribe({
+          next: (response) => {
+            const result = response?.result?.result;
+            if (!result) { observer.next(allUsers); observer.complete(); return; }
+            const users: VehicleUser[] = result.users || [];
+            if (index === 0) { console.log('RAW_RESPONSE:', JSON.stringify(result.users?.[0], null, 2));
+            console.log('ALL_RECORD_KEYS:', Object.keys(result.users?.[0]?.recordData || {}));
+            console.log('ALL_ATTRIBUTES:', Object.keys(result.users?.[0]?.attributes || {})); }
+            allUsers = [...allUsers, ...users];
+            index += chunkSize;
+            if (result.completed) { observer.next(allUsers); observer.complete(); }
+            else { fetchNext(); }
+          },
+          error: (err) => observer.error(err)
+        });
+      };
+      fetchNext();
+    });
   }
 
-  getMobileUsers(): Observable<any> {
-    const appId = this.authService.getSelectedAppId();
-    const body = {
-      method: 'getusers',
-      appId: appId,
-      params: {}
-    };
-    return this.http.post<any>(
-      `${environment.apiUrl}/MobileAPI.ashx`,
-      body,
-      { headers: this.getRpcHeaders('getusers') }
-    );
+  getUpdates(viewId: number = 18): Observable<VehicleUser[]> {
+    return this.getUsers(viewId);
   }
 }
+
+
+
+
