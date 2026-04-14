@@ -58,6 +58,26 @@ export class GpsGateApiService {
     );
   }
 
+  private normalizeVehicle(v: VehicleUser): VehicleUser {
+    if (!v) return v;
+
+    if (v.trackPoint) {
+      const tp = v.trackPoint;
+      // Populate pos from alternative position alias if absent
+      if (!tp.pos && (tp as any).position) {
+        const p = (tp as any).position;
+        tp.pos = { lat: p.latitude ?? p.lat ?? 0, lng: p.longitude ?? p.lng ?? 0, alt: p.altitude ?? 0 };
+      }
+      // Populate vel from alternative velocity alias if absent
+      if (!tp.vel && (tp as any).velocity) {
+        const vel = (tp as any).velocity;
+        tp.vel = { speed: vel.groundSpeed ?? vel.speed ?? 0, heading: vel.heading ?? 0 };
+      }
+    }
+
+    return v;
+  }
+
   getUsers(viewId: number = 18): Observable<VehicleUser[]> {
     const chunkSize = 50;
     let allUsers: VehicleUser[] = [];
@@ -68,10 +88,7 @@ export class GpsGateApiService {
           next: (response) => {
             const result = response?.result?.result;
             if (!result) { observer.next(allUsers); observer.complete(); return; }
-            const users: VehicleUser[] = result.users || [];
-            if (index === 0) { console.log('RAW_RESPONSE:', JSON.stringify(result.users?.[0], null, 2));
-            console.log('ALL_RECORD_KEYS:', Object.keys(result.users?.[0]?.recordData || {}));
-            console.log('ALL_ATTRIBUTES:', Object.keys(result.users?.[0]?.attributes || {})); }
+            const users: VehicleUser[] = (result.users || []).map((u: VehicleUser) => this.normalizeVehicle(u));
             allUsers = [...allUsers, ...users];
             index += chunkSize;
             if (result.completed) { observer.next(allUsers); observer.complete(); }
