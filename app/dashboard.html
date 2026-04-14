@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GpsGate Fleet – Dashboard</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- App styles -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loading-overlay" class="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading vehicles…</div>
+</div>
+
+<div class="dashboard">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+
+    <div class="sidebar-header">
+      <div class="sidebar-header-logo">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:700;">Fleet Tracker</div>
+        <div class="sidebar-appname" id="app-name">Loading…</div>
+      </div>
+      <button class="btn-logout" id="btn-logout" title="Logout">Logout</button>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Search…" autocomplete="off" />
+    </div>
+
+    <div class="assets-count" id="assets-count">All assets (0)</div>
+
+    <div class="vehicle-list" id="vehicle-list">
+      <div class="empty-state">Loading…</div>
+    </div>
+
+  </aside>
+
+  <!-- ===== Map ===== -->
+  <div class="map-container">
+    <div id="map"></div>
+
+    <!-- Last-updated indicator -->
+    <div class="update-bar" id="update-time">Connecting…</div>
+
+    <!-- Vehicle detail popup (slides up from bottom) -->
+    <div class="vehicle-popup" id="vehicle-popup">
+      <div class="popup-handle"></div>
+
+      <div class="popup-header">
+        <div class="popup-title-block">
+          <div class="popup-title" id="popup-name">—</div>
+          <div class="popup-username" id="popup-username"></div>
+        </div>
+        <button class="btn-close" id="btn-popup-close">✕</button>
+      </div>
+
+      <div class="popup-status parked" id="popup-status">Parked</div>
+
+      <div class="popup-details">
+        <div class="popup-detail-item">
+          <label>Last seen</label>
+          <span id="popup-lastseen">—</span>
+        </div>
+        <div class="popup-detail-item">
+          <label>Speed</label>
+          <span id="popup-speed">0 km/h</span>
+        </div>
+        <div class="popup-detail-item popup-addr-row">
+          <label>Address</label>
+          <span id="popup-addr">—</span>
+        </div>
+      </div>
+
+      <button class="btn-view-more" id="btn-view-more">View more →</button>
+    </div>
+
+  </div><!-- end map-container -->
+
+</div><!-- end dashboard -->
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- App scripts -->
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>
