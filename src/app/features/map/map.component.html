@@ -1,23 +1,45 @@
-<div class="map-container">
+﻿<div class="map-container">
   <!-- Sidebar -->
   <div class="sidebar" [class.closed]="!sidebarOpen">
     <div class="sidebar-header">
-      <h2>{{ appName }}</h2>
-      <button class="btn-toggle" (click)="toggleSidebar()">✕</button>
+      <div class="header-top">
+        <h2 class="app-name-btn" (click)="toggleAppDropdown()">{{ appName }} &#9660;</h2>
+        <button class="btn-toggle" (click)="toggleSidebar()">&#x2715;</button>
+      </div>
+      @if (appDropdownOpen) {
+        <div class="app-dropdown">
+          <input type="text" placeholder="Filter applications..." [(ngModel)]="appFilterTerm" class="app-filter-input" />
+          @for (app of filteredApps(); track app.id) {
+            <div class="app-dropdown-item" [class.active]="app.id === currentAppId" (click)="switchApp(app.id)">
+              {{ app.name }}
+            </div>
+          }
+        </div>
+      }
     </div>
 
     <div class="sidebar-search">
       <input
         type="text"
-        placeholder="Kërko makina..."
+        placeholder="Search vehicles..."
         [(ngModel)]="searchTerm"
         (ngModelChange)="filterVehicles()"
       />
     </div>
 
+    @if (views.length > 0) {
+      <div class="sidebar-views">
+        <select [value]="selectedViewId" (change)="onViewChange($event)">
+          @for (view of views; track view.id) {
+            <option [value]="view.id">{{ view.name }}</option>
+          }
+        </select>
+      </div>
+    }
+
     <div class="vehicle-list">
       @if (loading) {
-        <div class="loading-indicator">Duke ngarkuar...</div>
+        <div class="loading-indicator">Loading...</div>
       }
 
       @for (vehicle of filteredVehicles; track vehicle.id) {
@@ -27,27 +49,29 @@
             <div class="vehicle-name">{{ vehicle.name || vehicle.username }}</div>
             <div class="vehicle-desc">{{ vehicle.description || '' }}</div>
             <div class="vehicle-speed">
-              {{ (vehicle.calculatedSpeed || 0).toFixed(1) }} km/h · {{ getStatusLabel(vehicle) }}
+              {{ ((vehicle.calculatedSpeed || 0) * 3.6).toFixed(1) }} km/h &middot; {{ getStatusLabel(vehicle) }}
             </div>
           </div>
         </div>
       }
 
       @if (!loading && filteredVehicles.length === 0) {
-        <div class="no-vehicles">Asnjë makinë nuk u gjet.</div>
+        <div class="no-vehicles">No vehicles found.</div>
       }
     </div>
 
     <div class="sidebar-footer">
-      <button class="btn-logout" (click)="logout()">Dil</button>
+      <button class="btn-logout" (click)="logout()">Logout</button>
     </div>
   </div>
 
   <!-- Toggle button when sidebar is closed -->
   @if (!sidebarOpen) {
-    <button class="btn-open-sidebar" (click)="toggleSidebar()">☰</button>
+    <button class="btn-open-sidebar" (click)="toggleSidebar()">&#9776;</button>
   }
 
   <!-- Map -->
   <div id="map" class="map"></div>
 </div>
+
+

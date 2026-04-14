@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { GpsGateApplication } from '../../core/models/session.model';
@@ -7,13 +8,17 @@ import { GpsGateApplication } from '../../core/models/session.model';
 @Component({
   selector: 'app-app-select',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './app-select.component.html',
   styleUrls: ['./app-select.component.scss']
 })
 export class AppSelectComponent implements OnInit {
   applications: GpsGateApplication[] = [];
+  filteredApps: GpsGateApplication[] = [];
+  selectedApp: GpsGateApplication | null = null;
   userName = '';
+  isOpen = false;
+  searchText = '';
 
   constructor(
     private authService: AuthService,
@@ -22,16 +27,45 @@ export class AppSelectComponent implements OnInit {
 
   ngOnInit(): void {
     this.applications = this.authService.getApplications();
+    this.filteredApps = [...this.applications];
     this.userName = this.authService.getSession()?.UserDisplayName || '';
-
     if (this.applications.length === 0) {
       this.router.navigate(['/login']);
     }
+    if (this.applications.length > 0) {
+      this.selectedApp = this.applications[0];
+    }
+  }
+
+  toggleDropdown(): void {
+    this.isOpen = !this.isOpen;
+    if (this.isOpen) {
+      this.searchText = '';
+      this.filteredApps = [...this.applications];
+    }
+  }
+
+  filterApps(): void {
+    const s = this.searchText.toLowerCase();
+    this.filteredApps = this.applications.filter(a => a.name.toLowerCase().includes(s));
   }
 
   selectApp(app: GpsGateApplication): void {
-    this.authService.selectApplication(app.id);
-    this.router.navigate(['/map']);
+    this.selectedApp = app;
+    this.isOpen = false;
+    this.searchText = '';
+  }
+
+  confirm(): void {
+    if (!this.selectedApp) return;
+    this.authService.loginToApp(this.selectedApp.id).subscribe({
+      next: () => {
+        this.router.navigate(['/map']);
+      },
+      error: () => {
+        console.error('LoginToApp dështoi');
+      }
+    });
   }
 
   logout(): void {
@@ -39,3 +73,4 @@ export class AppSelectComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 }
+

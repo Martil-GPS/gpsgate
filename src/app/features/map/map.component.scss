@@ -1,4 +1,4 @@
-.map-container {
+﻿.map-container {
   display: flex;
   height: 100vh;
   width: 100vw;
@@ -6,7 +6,6 @@
   overflow: hidden;
 }
 
-// Sidebar
 .sidebar {
   width: 320px;
   min-width: 320px;
@@ -15,10 +14,7 @@
   flex-direction: column;
   z-index: 1000;
   transition: margin-left 0.3s ease;
-
-  &.closed {
-    margin-left: -320px;
-  }
+  &.closed { margin-left: -320px; }
 }
 
 .sidebar-header {
@@ -27,13 +23,7 @@
   justify-content: space-between;
   padding: 16px 20px;
   border-bottom: 1px solid #1a3a5c;
-
-  h2 {
-    color: #e0e0e0;
-    font-size: 16px;
-    margin: 0;
-    font-weight: 600;
-  }
+  position: relative;
 
   .btn-toggle {
     background: none;
@@ -42,17 +32,86 @@
     font-size: 18px;
     cursor: pointer;
     padding: 4px 8px;
+    flex-shrink: 0;
+    &:hover { color: #e0e0e0; }
+  }
+}
 
-    &:hover {
-      color: #e0e0e0;
-    }
+.app-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  &:hover { background: rgba(74, 158, 255, 0.15); }
+
+  .app-name {
+    color: #e0e0e0;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .app-arrow {
+    color: #4a9eff;
+    font-size: 10px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    &.open { transform: rotate(180deg); }
+  }
+}
+
+.app-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #1a2a4a;
+  border: 1px solid #1a4a7a;
+  border-radius: 0 0 10px 10px;
+  z-index: 2000;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+
+  .app-search {
+    width: 100%;
+    background: #0f3460;
+    border: none;
+    border-bottom: 1px solid #1a4a7a;
+    padding: 10px 14px;
+    color: #e0e0e0;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+    &::placeholder { color: #6a6a7a; }
+  }
+
+  .app-dropdown-list {
+    max-height: 260px;
+    overflow-y: auto;
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: #1a2a4a; }
+    &::-webkit-scrollbar-thumb { background: #1a4a7a; border-radius: 2px; }
+  }
+
+  .app-dropdown-item {
+    padding: 10px 16px;
+    color: #c0c0d0;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+    &:hover { background: #0f3460; color: #e0e0e0; }
+    &.active { background: #4a9eff; color: white; font-weight: 600; }
   }
 }
 
 .sidebar-search {
   padding: 12px 16px;
   border-bottom: 1px solid #1a3a5c;
-
   input {
     width: 100%;
     background: #0f3460;
@@ -63,14 +122,8 @@
     font-size: 13px;
     outline: none;
     box-sizing: border-box;
-
-    &::placeholder {
-      color: #6a6a7a;
-    }
-
-    &:focus {
-      border-color: #4a9eff;
-    }
+    &::placeholder { color: #6a6a7a; }
+    &:focus { border-color: #4a9eff; }
   }
 }
 
@@ -78,19 +131,9 @@
   flex: 1;
   overflow-y: auto;
   padding: 8px 0;
-
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: #16213e;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #1a4a7a;
-    border-radius: 2px;
-  }
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: #16213e; }
+  &::-webkit-scrollbar-thumb { background: #1a4a7a; border-radius: 2px; }
 }
 
 .vehicle-item {
@@ -100,10 +143,7 @@
   padding: 10px 16px;
   cursor: pointer;
   transition: background 0.15s;
-
-  &:hover {
-    background: rgba(15, 52, 96, 0.5);
-  }
+  &:hover { background: rgba(15, 52, 96, 0.5); }
 }
 
 .vehicle-status {
@@ -116,7 +156,6 @@
 .vehicle-info {
   flex: 1;
   min-width: 0;
-
   .vehicle-name {
     color: #e0e0e0;
     font-size: 13px;
@@ -125,7 +164,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   .vehicle-desc {
     color: #6a7a8a;
     font-size: 11px;
@@ -133,7 +171,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   .vehicle-speed {
     color: #8a9aaa;
     font-size: 11px;
@@ -141,8 +178,7 @@
   }
 }
 
-.loading-indicator,
-.no-vehicles {
+.loading-indicator, .no-vehicles {
   color: #6a7a8a;
   text-align: center;
   padding: 24px 16px;
@@ -152,7 +188,6 @@
 .sidebar-footer {
   padding: 12px 16px;
   border-top: 1px solid #1a3a5c;
-
   .btn-logout {
     width: 100%;
     background: transparent;
@@ -163,15 +198,10 @@
     font-size: 13px;
     cursor: pointer;
     transition: all 0.2s;
-
-    &:hover {
-      color: #ff6b6b;
-      border-color: #ff6b6b;
-    }
+    &:hover { color: #ff6b6b; border-color: #ff6b6b; }
   }
 }
 
-// Open sidebar button
 .btn-open-sidebar {
   position: absolute;
   top: 16px;
@@ -184,26 +214,17 @@
   padding: 10px 14px;
   font-size: 18px;
   cursor: pointer;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-
-  &:hover {
-    background: #1a5090;
-  }
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  &:hover { background: #1a5090; }
 }
 
-// Map
 .map {
   flex: 1;
   height: 100%;
 }
 
-// Vehicle marker styles (global via ::ng-deep)
 :host ::ng-deep {
-  .vehicle-marker {
-    background: transparent !important;
-    border: none !important;
-  }
-
+  .vehicle-marker { background: transparent !important; border: none !important; }
   .marker-dot {
     width: 24px;
     height: 24px;
@@ -211,20 +232,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     position: relative;
   }
-
   .marker-arrow {
     width: 0;
     height: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-bottom: 8px solid rgba(255, 255, 255, 0.9);
+    border-bottom: 8px solid rgba(255,255,255,0.9);
     position: absolute;
     top: 2px;
   }
-
   .marker-pulse {
     position: absolute;
     top: -4px;
@@ -236,25 +255,158 @@
     opacity: 0;
     animation: pulse 2s ease-out infinite;
   }
-
   @keyframes pulse {
-    0% {
-      transform: scale(0.8);
-      opacity: 0.6;
-    }
-    100% {
-      transform: scale(2);
-      opacity: 0;
-    }
+    0% { transform: scale(0.8); opacity: 0.6; }
+    100% { transform: scale(2); opacity: 0; }
   }
-
   .vehicle-popup {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 13px;
     line-height: 1.4;
+    strong { font-size: 14px; }
+  }
+}
 
-    strong {
-      font-size: 14px;
+
+
+
+.vehicle-marker {
+  overflow: visible !important;
+}
+
+.marker-label {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000000;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 9999 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-name-btn {
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin: 0;
+  user-select: none;
+  &:hover { opacity: 0.8; }
+}
+
+.app-dropdown {
+  background: #1e2a3a;
+  border: 1px solid #2d3d4f;
+  border-radius: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+  z-index: 1000;
+
+  .app-filter-input {
+    width: 100%;
+    padding: 8px;
+    background: #16202d;
+    border: none;
+    border-bottom: 1px solid #2d3d4f;
+    color: white;
+    box-sizing: border-box;
+    &:focus { outline: none; }
+  }
+
+  .app-dropdown-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    color: #cdd6e0;
+    font-size: 0.9rem;
+    &:hover { background: #2d3d4f; }
+    &.active { color: #4fc3f7; font-weight: bold; }
+  }
+}
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .map-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    min-width: unset;
+    height: 100vh;
+    z-index: 2000;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+
+    &.closed {
+      margin-left: 0;
+      transform: translateX(-100%);
     }
+  }
+
+  .map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .btn-open-sidebar {
+    top: 12px;
+    left: 12px;
+    padding: 12px 16px;
+    font-size: 20px;
+    z-index: 1500;
+  }
+
+  .vehicle-item {
+    padding: 14px 16px;
+  }
+
+  .vehicle-info {
+    .vehicle-name { font-size: 15px; }
+    .vehicle-speed { font-size: 13px; }
+  }
+
+  .sidebar-header {
+    padding: 20px 16px;
+    h2 { font-size: 1.2rem; }
+  }
+
+  .app-dropdown {
+    max-height: 50vh;
+  }
+
+  .sidebar-footer {
+    padding: 16px;
+    .btn-logout {
+      padding: 14px;
+      font-size: 15px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .vehicle-info {
+    .vehicle-name { font-size: 14px; }
+    .vehicle-desc { font-size: 12px; }
+    .vehicle-speed { font-size: 12px; }
   }
 }

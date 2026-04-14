@@ -1,4 +1,4 @@
-export interface GpsGateApplication {
+﻿export interface GpsGateApplication {
   id: number;
   name: string;
   description: string;
