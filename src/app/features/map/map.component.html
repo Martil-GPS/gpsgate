@@ -1,11 +1,15 @@
-﻿<div class="map-container">
+<div class="map-container">
+
   <!-- Sidebar -->
   <div class="sidebar" [class.closed]="!sidebarOpen">
-    <div class="sidebar-header">
-      <div class="header-top">
+
+    <!-- Dashboard Stats -->
+    <div class="dashboard-stats">
+      <div class="stats-header">
         <h2 class="app-name-btn" (click)="toggleAppDropdown()">{{ appName }} &#9660;</h2>
         <button class="btn-toggle" (click)="toggleSidebar()">&#x2715;</button>
       </div>
+
       @if (appDropdownOpen) {
         <div class="app-dropdown">
           <input type="text" placeholder="Filter applications..." [(ngModel)]="appFilterTerm" class="app-filter-input" />
@@ -16,17 +20,68 @@
           }
         </div>
       }
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-value">{{ statsTotal }}</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-item moving">
+          <span class="stat-value">{{ statsMoving }}</span>
+          <span class="stat-label">Moving</span>
+        </div>
+        <div class="stat-item idle">
+          <span class="stat-value">{{ statsIdle }}</span>
+          <span class="stat-label">Idle</span>
+        </div>
+        <div class="stat-item parked">
+          <span class="stat-value">{{ statsParked }}</span>
+          <span class="stat-label">Parked</span>
+        </div>
+        <div class="stat-item pending">
+          <span class="stat-value">{{ statsPending }}</span>
+          <span class="stat-label">Pending</span>
+        </div>
+        <div class="stat-item offline">
+          <span class="stat-value">{{ statsOffline }}</span>
+          <span class="stat-label">Offline</span>
+        </div>
+      </div>
     </div>
 
+    <!-- Search -->
     <div class="sidebar-search">
       <input
         type="text"
-        placeholder="Search vehicles..."
+        placeholder="🔍 Search vehicles..."
         [(ngModel)]="searchTerm"
         (ngModelChange)="filterVehicles()"
       />
     </div>
 
+    <!-- Filter Buttons -->
+    <div class="filter-buttons">
+      <button class="filter-btn" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
+        All <span class="filter-count">{{ statsTotal }}</span>
+      </button>
+      <button class="filter-btn moving" [class.active]="activeFilter === 'moving'" (click)="setFilter('moving')">
+        Mov <span class="filter-count">{{ statsMoving }}</span>
+      </button>
+      <button class="filter-btn idle" [class.active]="activeFilter === 'idle'" (click)="setFilter('idle')">
+        Idle <span class="filter-count">{{ statsIdle }}</span>
+      </button>
+      <button class="filter-btn parked" [class.active]="activeFilter === 'parked'" (click)="setFilter('parked')">
+        Park <span class="filter-count">{{ statsParked }}</span>
+      </button>
+      <button class="filter-btn offline" [class.active]="activeFilter === 'offline'" (click)="setFilter('offline')">
+        Off <span class="filter-count">{{ statsOffline }}</span>
+      </button>
+      <button class="filter-btn pending" [class.active]="activeFilter === 'pending'" (click)="setFilter('pending')">
+        Pend <span class="filter-count">{{ statsPending }}</span>
+      </button>
+    </div>
+
+    <!-- Views selector -->
     @if (views.length > 0) {
       <div class="sidebar-views">
         <select [value]="selectedViewId" (change)="onViewChange($event)">
@@ -37,19 +92,22 @@
       </div>
     }
 
+    <!-- Vehicle List -->
     <div class="vehicle-list">
       @if (loading) {
         <div class="loading-indicator">Loading...</div>
       }
 
       @for (vehicle of filteredVehicles; track vehicle.id) {
-        <div class="vehicle-item" (click)="focusVehicle(vehicle)">
-          <div class="vehicle-status" [style.background]="getStatusColor(vehicle)"></div>
+        <div class="vehicle-item" [class.selected]="selectedVehicle?.id === vehicle.id" (click)="selectVehicle(vehicle)">
+          <div class="vehicle-icon" [ngClass]="getStatusLabel(vehicle).toLowerCase()">
+            <span class="vehicle-icon-symbol">{{ getStatusSymbol(vehicle) }}</span>
+          </div>
           <div class="vehicle-info">
             <div class="vehicle-name">{{ vehicle.name || vehicle.username }}</div>
-            <div class="vehicle-desc">{{ vehicle.description || '' }}</div>
-            <div class="vehicle-speed">
-              {{ ((vehicle.calculatedSpeed || 0) * 3.6).toFixed(1) }} km/h &middot; {{ getStatusLabel(vehicle) }}
+            <div class="vehicle-addr">{{ getAddress(vehicle) }}</div>
+            <div class="vehicle-meta">
+              {{ getTimeAgo(vehicle) }} &middot; {{ ((vehicle.calculatedSpeed || 0) * 3.6).toFixed(1) }} km/h
             </div>
           </div>
         </div>
@@ -72,6 +130,59 @@
 
   <!-- Map -->
   <div id="map" class="map"></div>
+
+  <!-- Vehicle Detail Panel -->
+  @if (detailPanelOpen && selectedVehicle) {
+    <div class="detail-panel">
+      <div class="detail-header">
+        <div class="detail-title">
+          <span class="detail-icon" [ngClass]="getStatusLabel(selectedVehicle).toLowerCase()">
+            {{ getStatusSymbol(selectedVehicle) }}
+          </span>
+          <div class="detail-name-block">
+            <span class="detail-vehicle-name">{{ selectedVehicle.name || selectedVehicle.username }}</span>
+            <span class="detail-status">
+              {{ getStatusLabel(selectedVehicle) }} ({{ ((selectedVehicle.calculatedSpeed || 0) * 3.6).toFixed(1) }} km/h)
+            </span>
+          </div>
+        </div>
+        <button class="detail-close" (click)="closeDetailPanel()">&#x2715;</button>
+      </div>
+
+      <div class="detail-meta">
+        <div class="detail-address">&#128205; {{ getAddress(selectedVehicle) }}</div>
+        <div class="detail-time">{{ getTimeAgo(selectedVehicle) }}</div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="detail-tabs">
+        <button class="tab-btn" [class.active]="activeTab === 'status'" (click)="setActiveTab('status')">Status</button>
+        <button class="tab-btn" [class.active]="activeTab === 'events'" (click)="setActiveTab('events')">Events</button>
+        <button class="tab-btn" [class.active]="activeTab === 'trips'" (click)="setActiveTab('trips')">Trips</button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="detail-content">
+        @if (activeTab === 'status') {
+          <div class="fields-section">
+            <div class="fields-title">MAPPED FIELDS</div>
+            @for (field of getVehicleFields(selectedVehicle); track field.label) {
+              <div class="field-row">
+                <span class="field-icon">{{ field.icon }}</span>
+                <span class="field-label">{{ field.label }}</span>
+                <span class="field-value">{{ field.value }}</span>
+              </div>
+            }
+          </div>
+        }
+        @if (activeTab === 'events') {
+          <div class="coming-soon">Coming soon</div>
+        }
+        @if (activeTab === 'trips') {
+          <div class="coming-soon">Coming soon</div>
+        }
+      </div>
+    </div>
+  }
+
 </div>
-
-
