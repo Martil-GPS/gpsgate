@@ -8,7 +8,7 @@ const SITE_ADMIN_BO_TYPE = 'GpsGate.SiteAdminApplication.SiteAdminApplication';
 /**
  * Clean GpsGate JSON responses that contain `new Date(...)` literals.
  * GpsGate server sometimes embeds JavaScript Date constructors in JSON responses
- * (e.g., `"time": new Date(-62135596800000)`). This regex replaces them with
+ * (e.g., "time": new Date(-62135596800000)). This regex replaces them with
  * the raw numeric timestamp string so the result is valid JSON.
  * Limitation: only handles single numeric arguments; multiple-arg Date constructors
  * are not expected in GpsGate responses.
@@ -114,7 +114,7 @@ async function apiGetVehicles(appId, hash) {
   const resp = await fetch(`${GPS_BASE}/api/v.1/applications/${appId}/users`, {
     method: 'GET',
     headers: {
-      'Authorization': authHash,
+      'Authorization': 'Hash ' + authHash,
       'Accept': 'application/json'
     },
     credentials: 'include'
@@ -137,7 +137,7 @@ async function apiGetUpdates(appId, hash) {
   const resp = await fetch(`${GPS_BASE}/MobileAPI.ashx`, {
     method: 'POST',
     headers: {
-      'Authorization': authHash,
+      'Authorization': 'Hash ' + authHash,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(body),
