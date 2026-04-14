@@ -28,7 +28,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   views: GpsGateView[] = [];
   selectedViewId: number = 0;
   searchTerm = '';
-  sidebarOpen = true;
+  sidebarOpen = false;
   appName = '';
   appDropdownOpen = false;
   appFilterTerm = '';
@@ -38,8 +38,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   activeFilter: 'all' | 'moving' | 'idle' | 'parked' | 'offline' | 'pending' = 'all';
   selectedVehicle: VehicleUser | null = null;
-  activeTab: 'status' | 'events' | 'trips' = 'status';
+  activeTab: 'status' | 'events' | 'trips' | 'commands' = 'status';
   detailPanelOpen = false;
+  vehiclePanelOpen = false;
 
   constructor(
     private authService: AuthService,
@@ -257,6 +258,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   get statsParked(): number { return this.vehicles.filter(v => this.getStatusLabel(v) === 'Parked').length; }
   get statsOffline(): number { return this.vehicles.filter(v => this.getStatusLabel(v) === 'Offline').length; }
   get statsPending(): number { return 0; }
+  get statsOpenEvents(): number { return 0; }
+  get statsEvents7Days(): number { return 0; }
+  get statsHighlighted(): number { return 0; }
+  get statsNotifications(): number { return 0; }
 
   setFilter(filter: string): void {
     this.activeFilter = filter as any;
@@ -267,6 +272,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedVehicle = vehicle;
     this.detailPanelOpen = true;
     this.activeTab = 'status';
+    this.vehiclePanelOpen = false;
     this.focusVehicle(vehicle);
   }
 
@@ -275,7 +281,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.detailPanelOpen = false;
   }
 
-  setActiveTab(tab: 'status' | 'events' | 'trips'): void {
+  setActiveTab(tab: 'status' | 'events' | 'trips' | 'commands'): void {
     this.activeTab = tab;
   }
 
@@ -393,6 +399,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   toggleSidebar(): void { this.sidebarOpen = !this.sidebarOpen; }
+
+  toggleVehiclePanel(): void { this.vehiclePanelOpen = !this.vehiclePanelOpen; }
 
   toggleAppDropdown(): void {
     this.appDropdownOpen = !this.appDropdownOpen;
