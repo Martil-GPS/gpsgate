@@ -41,6 +41,38 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   activeTab: 'status' | 'events' | 'trips' | 'commands' = 'status';
   detailPanelOpen = false;
   vehiclePanelOpen = false;
+  detailPanelHeight = 50;
+  private isDragging = false;
+  private dragStartY = 0;
+  private dragStartHeight = 50;
+
+  get isMobile(): boolean {
+    return window.innerWidth < 769;
+  }
+
+  onPanelDragStart(event: TouchEvent): void {
+    this.isDragging = true;
+    this.dragStartY = event.touches[0].clientY;
+    this.dragStartHeight = this.detailPanelHeight;
+  }
+
+  onPanelDragMove(event: TouchEvent): void {
+    if (!this.isDragging) return;
+    const deltaY = this.dragStartY - event.touches[0].clientY;
+    const deltaPercent = (deltaY / window.innerHeight) * 100;
+    this.detailPanelHeight = Math.max(20, Math.min(92, this.dragStartHeight + deltaPercent));
+  }
+
+  onPanelDragEnd(): void {
+    this.isDragging = false;
+    if (this.detailPanelHeight < 28) {
+      this.closeDetailPanel();
+    } else if (this.detailPanelHeight > 68) {
+      this.detailPanelHeight = 90;
+    } else {
+      this.detailPanelHeight = 50;
+    }
+  }
 
   constructor(
     private authService: AuthService,
@@ -129,9 +161,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       if (existingMarker) {
         existingMarker.setLatLng([lat, lng]);
         existingMarker.setIcon(icon);
-        existingMarker.setPopupContent(this.createPopupContent(vehicle));
       } else {
-        const marker = L.marker([lat, lng], { icon }).addTo(this.map).bindPopup(this.createPopupContent(vehicle));
+        const marker = L.marker([lat, lng], { icon }).addTo(this.map);
+        marker.on('click', () => { this.selectVehicle(vehicle); });
         this.markers.set(vehicle.id, marker);
       }
     }
@@ -394,8 +426,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   focusVehicle(vehicle: VehicleUser): void {
     if (!vehicle.trackPoint?.pos) return;
     this.map.setView([vehicle.trackPoint.pos.lat, vehicle.trackPoint.pos.lng], 16);
-    const marker = this.markers.get(vehicle.id);
-    if (marker) { marker.setPopupContent(this.createPopupContent(vehicle)); marker.openPopup(); }
   }
 
   toggleSidebar(): void { this.sidebarOpen = !this.sidebarOpen; }

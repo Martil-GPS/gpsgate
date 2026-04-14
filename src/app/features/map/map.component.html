@@ -173,7 +173,12 @@
 
   <!-- Vehicle Detail Panel -->
   @if (detailPanelOpen && selectedVehicle) {
-    <div class="detail-panel">
+    <div class="detail-panel"
+         [style.height]="isMobile ? detailPanelHeight + 'vh' : '100%'"
+         (touchstart)="onPanelDragStart($event)"
+         (touchmove)="onPanelDragMove($event)"
+         (touchend)="onPanelDragEnd()">
+      <div class="drag-handle"><div class="drag-handle-bar"></div></div>
       <div class="detail-header">
         <div class="detail-title">
           <span class="detail-icon" [ngClass]="getStatusLabel(selectedVehicle).toLowerCase()">
