@@ -3,6 +3,11 @@
   <!-- Sidebar -->
   <div class="sidebar" [class.closed]="!sidebarOpen">
 
+    <!-- Support Banner -->
+    <div class="support-banner">
+      📱 Support: WhatsApp +355 69 235 1313
+    </div>
+
     <!-- Dashboard Stats -->
     <div class="dashboard-stats">
       <div class="stats-header">
@@ -24,7 +29,7 @@
       <div class="stats-grid">
         <div class="stat-item">
           <span class="stat-value">{{ statsTotal }}</span>
-          <span class="stat-label">Total</span>
+          <span class="stat-label">Total Assets</span>
         </div>
         <div class="stat-item moving">
           <span class="stat-value">{{ statsMoving }}</span>
@@ -46,90 +51,120 @@
           <span class="stat-value">{{ statsOffline }}</span>
           <span class="stat-label">Offline</span>
         </div>
-      </div>
-    </div>
-
-    <!-- Search -->
-    <div class="sidebar-search">
-      <input
-        type="text"
-        placeholder="🔍 Search vehicles..."
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="filterVehicles()"
-      />
-    </div>
-
-    <!-- Filter Buttons -->
-    <div class="filter-buttons">
-      <button class="filter-btn" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
-        All <span class="filter-count">{{ statsTotal }}</span>
-      </button>
-      <button class="filter-btn moving" [class.active]="activeFilter === 'moving'" (click)="setFilter('moving')">
-        Mov <span class="filter-count">{{ statsMoving }}</span>
-      </button>
-      <button class="filter-btn idle" [class.active]="activeFilter === 'idle'" (click)="setFilter('idle')">
-        Idle <span class="filter-count">{{ statsIdle }}</span>
-      </button>
-      <button class="filter-btn parked" [class.active]="activeFilter === 'parked'" (click)="setFilter('parked')">
-        Park <span class="filter-count">{{ statsParked }}</span>
-      </button>
-      <button class="filter-btn offline" [class.active]="activeFilter === 'offline'" (click)="setFilter('offline')">
-        Off <span class="filter-count">{{ statsOffline }}</span>
-      </button>
-      <button class="filter-btn pending" [class.active]="activeFilter === 'pending'" (click)="setFilter('pending')">
-        Pend <span class="filter-count">{{ statsPending }}</span>
-      </button>
-    </div>
-
-    <!-- Views selector -->
-    @if (views.length > 0) {
-      <div class="sidebar-views">
-        <select [value]="selectedViewId" (change)="onViewChange($event)">
-          @for (view of views; track view.id) {
-            <option [value]="view.id">{{ view.name }}</option>
-          }
-        </select>
-      </div>
-    }
-
-    <!-- Vehicle List -->
-    <div class="vehicle-list">
-      @if (loading) {
-        <div class="loading-indicator">Loading...</div>
-      }
-
-      @for (vehicle of filteredVehicles; track vehicle.id) {
-        <div class="vehicle-item" [class.selected]="selectedVehicle?.id === vehicle.id" (click)="selectVehicle(vehicle)">
-          <div class="vehicle-icon" [ngClass]="getStatusLabel(vehicle).toLowerCase()">
-            <span class="vehicle-icon-symbol">{{ getStatusSymbol(vehicle) }}</span>
-          </div>
-          <div class="vehicle-info">
-            <div class="vehicle-name">{{ vehicle.name || vehicle.username }}</div>
-            <div class="vehicle-addr">{{ getAddress(vehicle) }}</div>
-            <div class="vehicle-meta">
-              {{ getTimeAgo(vehicle) }} &middot; {{ ((vehicle.calculatedSpeed || 0) * 3.6).toFixed(1) }} km/h
-            </div>
-          </div>
+        <div class="stat-item open-events">
+          <span class="stat-value">{{ statsOpenEvents }}</span>
+          <span class="stat-label">Open Events</span>
         </div>
-      }
-
-      @if (!loading && filteredVehicles.length === 0) {
-        <div class="no-vehicles">No vehicles found.</div>
-      }
+        <div class="stat-item events7">
+          <span class="stat-value">{{ statsEvents7Days }}</span>
+          <span class="stat-label">Events 7 Days</span>
+        </div>
+        <div class="stat-item highlighted">
+          <span class="stat-value">{{ statsHighlighted }}</span>
+          <span class="stat-label">Highlighted</span>
+        </div>
+        <div class="stat-item notifications">
+          <span class="stat-value">{{ statsNotifications }}</span>
+          <span class="stat-label">Notifications</span>
+        </div>
+      </div>
     </div>
 
-    <div class="sidebar-footer">
-      <button class="btn-logout" (click)="logout()">Logout</button>
+    <!-- Settings Footer -->
+    <div class="settings-footer">
+      <button class="btn-settings" title="Settings">&#9881;</button>
+      <button class="btn-logout-icon" (click)="logout()" title="Logout">&#x23FB; Logout</button>
     </div>
   </div>
 
-  <!-- Toggle button when sidebar is closed -->
-  @if (!sidebarOpen) {
-    <button class="btn-open-sidebar" (click)="toggleSidebar()">&#9776;</button>
-  }
+  <!-- Left Floating Buttons -->
+  <div class="left-buttons">
+    <button class="left-btn" (click)="toggleVehiclePanel()" title="Vehicles">&#9776;</button>
+    <button class="left-btn" title="Reports">&#128196;</button>
+    <button class="left-btn" title="Alerts">&#9888;</button>
+  </div>
 
   <!-- Map -->
   <div id="map" class="map"></div>
+
+  <!-- Vehicles Panel (bottom sheet) -->
+  @if (vehiclePanelOpen) {
+    <div class="vehicles-panel">
+      <div class="vehicles-panel-header">
+        <span class="vehicles-panel-title">Vehicles</span>
+        <button class="vehicles-panel-close" (click)="toggleVehiclePanel()">&#x2715;</button>
+      </div>
+
+      <!-- Search -->
+      <div class="sidebar-search">
+        <input
+          type="text"
+          placeholder="🔍 Search vehicles..."
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="filterVehicles()"
+        />
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="filter-buttons">
+        <button class="filter-btn" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
+          All <span class="filter-count">{{ statsTotal }}</span>
+        </button>
+        <button class="filter-btn moving" [class.active]="activeFilter === 'moving'" (click)="setFilter('moving')">
+          Mov <span class="filter-count">{{ statsMoving }}</span>
+        </button>
+        <button class="filter-btn idle" [class.active]="activeFilter === 'idle'" (click)="setFilter('idle')">
+          Idle <span class="filter-count">{{ statsIdle }}</span>
+        </button>
+        <button class="filter-btn parked" [class.active]="activeFilter === 'parked'" (click)="setFilter('parked')">
+          Park <span class="filter-count">{{ statsParked }}</span>
+        </button>
+        <button class="filter-btn offline" [class.active]="activeFilter === 'offline'" (click)="setFilter('offline')">
+          Off <span class="filter-count">{{ statsOffline }}</span>
+        </button>
+        <button class="filter-btn pending" [class.active]="activeFilter === 'pending'" (click)="setFilter('pending')">
+          Pend <span class="filter-count">{{ statsPending }}</span>
+        </button>
+      </div>
+
+      <!-- Views selector -->
+      @if (views.length > 0) {
+        <div class="sidebar-views">
+          <select [value]="selectedViewId" (change)="onViewChange($event)">
+            @for (view of views; track view.id) {
+              <option [value]="view.id">{{ view.name }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      <!-- Vehicle List -->
+      <div class="vehicle-list">
+        @if (loading) {
+          <div class="loading-indicator">Loading...</div>
+        }
+
+        @for (vehicle of filteredVehicles; track vehicle.id) {
+          <div class="vehicle-item" [class.selected]="selectedVehicle?.id === vehicle.id" (click)="selectVehicle(vehicle)">
+            <div class="vehicle-icon" [ngClass]="getStatusLabel(vehicle).toLowerCase()">
+              <span class="vehicle-icon-symbol">{{ getStatusSymbol(vehicle) }}</span>
+            </div>
+            <div class="vehicle-info">
+              <div class="vehicle-name">{{ vehicle.name || vehicle.username }}</div>
+              <div class="vehicle-addr">{{ getAddress(vehicle) }}</div>
+              <div class="vehicle-meta">
+                {{ getTimeAgo(vehicle) }} &middot; {{ ((vehicle.calculatedSpeed || 0) * 3.6).toFixed(1) }} km/h
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (!loading && filteredVehicles.length === 0) {
+          <div class="no-vehicles">No vehicles found.</div>
+        }
+      </div>
+    </div>
+  }
 
   <!-- Vehicle Detail Panel -->
   @if (detailPanelOpen && selectedVehicle) {
@@ -154,11 +189,22 @@
         <div class="detail-time">{{ getTimeAgo(selectedVehicle) }}</div>
       </div>
 
+      <!-- Distance + Action Buttons -->
+      <div class="detail-actions">
+        <div class="detail-distance">&#128739; 0 km today</div>
+        <div class="detail-action-btns">
+          <button class="btn-share">&#128279; Share</button>
+          <button class="btn-trips">&#128507; Trips</button>
+          <button class="btn-directions">&#9654; Directions</button>
+        </div>
+      </div>
+
       <!-- Tabs -->
       <div class="detail-tabs">
         <button class="tab-btn" [class.active]="activeTab === 'status'" (click)="setActiveTab('status')">Status</button>
         <button class="tab-btn" [class.active]="activeTab === 'events'" (click)="setActiveTab('events')">Events</button>
         <button class="tab-btn" [class.active]="activeTab === 'trips'" (click)="setActiveTab('trips')">Trips</button>
+        <button class="tab-btn" [class.active]="activeTab === 'commands'" (click)="setActiveTab('commands')">Commands</button>
       </div>
 
       <!-- Tab Content -->
@@ -179,6 +225,9 @@
           <div class="coming-soon">Coming soon</div>
         }
         @if (activeTab === 'trips') {
+          <div class="coming-soon">Coming soon</div>
+        }
+        @if (activeTab === 'commands') {
           <div class="coming-soon">Coming soon</div>
         }
       </div>
